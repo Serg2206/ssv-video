@@ -1,0 +1,33 @@
+
+project:
+  name: "SSVproff Video Publisher"
+  version: "2.0.0"
+
+paths:
+  input_folder: "./input"
+  output_folder: "./output"
+
+ai:
+  provider: "openai_gpt"
+  model: "gpt-4o-mini"
+  language: "ru"
+  temperature: 0.7
+
+thumbnail:
+  style: "branding_v1"
+  generator: "local_template"
+  api_provider: "dall_e"
+
+youtube:
+  enabled: false
+  client_secrets_file: "client_secrets.json"
+  default_playlist_id: "PL_your_playlist_id_here"
+
+open_science:
+  generate_readme: true
+  export_artifacts: true
+
+video_synthesis:
+  enabled: false
+  method: "text_on_screen"
+  output_filename_template: "final_{timestamp}_{input_name}.mp4"
