@@ -1,0 +1,29 @@
+
+project:
+  name: "SSVproff Video Creator"
+  version: "1.0.0"
+
+paths:
+  input_folder: "./input"
+  output_folder: "./output"
+  ssv_package_folder: "./output/2024-05-21_..."
+
+video_generation:
+  method: "text_on_screen"
+  resolution:
+    width: 1280
+    height: 720
+  fps: 24
+  duration_per_text_chunk: 5
+  background:
+    color: [20, 25, 30]
+    image_path: null
+  text:
+    font: "DejaVuSans-Bold.ttf"
+    fontsize: 48
+    color: "white"
+    stroke_color: "black"
+    stroke_width: 1
+    position: ["center", 0.6]
+  thumbnail_duration: 3
+  audio_input: null

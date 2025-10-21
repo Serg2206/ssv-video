@@ -1,0 +1,9 @@
+
+openai>=1.0.0
+google-api-python-client
+google-auth-oauthlib
+pillow
+pyyaml
+python-dotenv
+requests
+moviepy>=1.0.3
