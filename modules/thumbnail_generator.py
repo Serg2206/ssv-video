@@ -23,7 +23,16 @@ class ThumbnailGenerator:
             raise ValueError(f"Неподдерживаемый генератор превью: {self.generator}")
 
     def _generate_local(self, title):
-        """Генерация превью локально (шаблон)"""
+        """Генерация превью локально (шаблон) с кэшированием"""
+        import hashlib
+        
+        # Кэширование на основе хэша заголовка
+        title_hash = hashlib.md5(title.encode()).hexdigest()
+        cache_path = os.path.join(self.output_folder, f"thumbnail_{title_hash}.png")
+        
+        if os.path.exists(cache_path):
+            return cache_path
+        
         # Создание простого превью с текстом
         width, height = 1280, 720
         img = Image.new('RGB', (width, height), color=(20, 25, 30))
@@ -43,11 +52,9 @@ class ThumbnailGenerator:
         position = ((width - text_width) // 2, (height - text_height) // 2)
         draw.text(position, text, fill=(255, 255, 255), font=font)
         
-        # Сохранение
-        os.makedirs(self.output_folder, exist_ok=True)
-        output_path = os.path.join(self.output_folder, "thumbnail_temp.png")
-        img.save(output_path)
-        return output_path
+        # Сохранение в кэш
+        img.save(cache_path)
+        return cache_path
 
     def _generate_api(self, title):
         """Генерация превью через API (заглушка)"""

@@ -1,11 +1,21 @@
 
+# SSV Video - Основные зависимости
 openai>=1.0.0
-google-api-python-client
-google-auth-oauthlib
-pillow
-pyyaml
-python-dotenv
-requests
-moviepy>=1.0.3
+google-api-python-client>=2.0.0
+google-auth-oauthlib>=1.0.0
+google-auth-httplib2>=0.1.0
+google-generativeai>=0.3.0  # Для Google Gemini
+pillow>=10.0.0
+pyyaml>=6.0
+python-dotenv>=1.0.0
+requests>=2.31.0
+moviepy>=2.0.0
 pydantic>=2.0.0
 colorama>=0.4.6
+aiofiles>=23.0.0
+httpx>=0.24.0
+tenacity>=8.2.0
+
+# Опциональные зависимости (раскомментировать при необходимости)
+# anthropic>=0.18.0  # Для Anthropic Claude
+# ollama>=0.1.0     # Для локальных моделей Ollama

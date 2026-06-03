@@ -1,33 +1,78 @@
 
 project:
   name: "SSVproff Video Publisher"
-  version: "2.0.0"
+  version: "2.1.0"
+  description: "Автоматизированная система генерации и публикации видео контента"
+  author: "SSVproff"
+  license: "MIT"
 
 paths:
   input_folder: "./input"
   output_folder: "./output"
+  logs_folder: "./logs"
+  cache_folder: "./cache"
 
 ai:
+  # Поддерживаемые провайдеры: openai_gpt, anthropic_claude, google_gemini, ollama_local
   provider: "openai_gpt"
   model: "gpt-4o-mini"
   language: "ru"
   temperature: 0.7
+  max_tokens: 2000
+  timeout: 60
+  max_retries: 3
+  retry_delay: 2.0
+  
+  # Настройки для различных провайдеров (раскомментировать при необходимости)
+  # Для OpenAI-compatible API (Ollama, LM Studio, vLLM)
+  # base_url: "http://localhost:11434/v1"
+  
+  # Для Anthropic Claude
+  # anthropic_model: "claude-sonnet-4-5-20250929"
+  
+  # Для Google Gemini
+  # gemini_model: "gemini-2.0-flash"
+  
+  # Для локальных моделей через Ollama
+  # ollama_model: "llama3.2:latest"
 
 thumbnail:
   style: "branding_v1"
   generator: "local_template"
   api_provider: "dall_e"
+  width: 1280
+  height: 720
+  font_size: 60
+  cache_enabled: true
 
 youtube:
   enabled: false
   client_secrets_file: "client_secrets.json"
   default_playlist_id: "PL_your_playlist_id_here"
+  privacy_status: "private"
+  auto_publish: false
 
 open_science:
   generate_readme: true
   export_artifacts: true
+  export_formats: ["json", "markdown"]
 
 video_synthesis:
   enabled: false
   method: "text_on_screen"
   output_filename_template: "final_{timestamp}_{input_name}.mp4"
+  timeout: 600
+  cache_enabled: true
+
+logging:
+  level: "INFO"
+  console_output: true
+  json_output: true
+  max_file_size: 10485760
+  backup_count: 5
+
+performance:
+  parallel_ai_requests: true
+  max_workers: 4
+  enable_caching: true
+  cache_ttl: 86400

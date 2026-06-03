@@ -1,23 +1,26 @@
 
 project:
   name: "SSVproff Video Creator"
-  version: "1.0.0"
+  version: "2.1.0"
+  description: "Генератор видео из текстовых транскрипций"
 
 paths:
   input_folder: "./input"
   output_folder: "./output"
-  ssv_package_folder: "./output/2024-05-21_..."
+  logs_folder: "./logs"
+  cache_folder: "./cache"
 
 video_generation:
   method: "text_on_screen"
   resolution:
     width: 1280
     height: 720
-  fps: 24
+  fps: 30
   duration_per_text_chunk: 5
   background:
     color: [20, 25, 30]
     image_path: null
+    gradient_enabled: false
   text:
     font: "DejaVuSans-Bold.ttf"
     fontsize: 48
@@ -25,5 +28,19 @@ video_generation:
     stroke_color: "black"
     stroke_width: 1
     position: ["center", 0.6]
+    max_chars_per_chunk: 200
+    animation: "fade"
   thumbnail_duration: 3
   audio_input: null
+  cache_enabled: true
+  cache_folder: "/tmp/video_cache"
+
+performance:
+  parallel_processing: false
+  max_workers: 2
+  enable_caching: true
+
+logging:
+  level: "INFO"
+  console_output: true
+  json_output: true
