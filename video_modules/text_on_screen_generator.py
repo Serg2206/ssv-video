@@ -3,9 +3,9 @@
 text_on_screen_generator.py - Генерация видео с текстом на экране
 """
 import os
-from moviepy.editor import (
+from moviepy import (
     VideoClip, ImageClip, TextClip, CompositeVideoClip,
-    concatenate_videoclips
+    concatenate_videoclips, VideoFileClip
 )
 
 
@@ -68,10 +68,19 @@ class TextOnScreenGenerator:
         return chunks
 
     def _create_text_clip(self, text):
-        """Создание клипа с текстом"""
+        """Создание клипа с текстом с кэшированием"""
+        import hashlib
+        
         duration = self.video_config['duration_per_text_chunk']
         width = self.video_config['resolution']['width']
         height = self.video_config['resolution']['height']
+        
+        # Кэширование на основе хэша текста
+        text_hash = hashlib.md5(text.encode()).hexdigest()
+        cache_path = os.path.join(self.video_config.get('cache_folder', '/tmp/video_cache'), f"{text_hash}.mp4")
+        
+        if os.path.exists(cache_path):
+            return VideoFileClip(cache_path)
         
         # Создание фона
         bg_color = tuple(self.video_config['background']['color'])
@@ -91,4 +100,11 @@ class TextOnScreenGenerator:
             method='caption'
         ).set_duration(duration).set_position('center')
         
-        return CompositeVideoClip([background, txt_clip])
+        clip = CompositeVideoClip([background, txt_clip])
+        
+        # Сохранение в кэш
+        cache_dir = os.path.dirname(cache_path)
+        os.makedirs(cache_dir, exist_ok=True)
+        clip.write_videofile(cache_path, fps=self.video_config['fps'], codec='libx264', audio_codec=None, verbose=False, logger=None)
+        
+        return VideoFileClip(cache_path)
