@@ -3,7 +3,7 @@
 text_on_screen_generator.py - Генерация видео с текстом на экране
 """
 import os
-from moviepy.editor import (
+from moviepy import (
     VideoClip, ImageClip, TextClip, CompositeVideoClip,
     concatenate_videoclips
 )
@@ -75,20 +75,29 @@ class TextOnScreenGenerator:
         
         # Создание фона
         bg_color = tuple(self.video_config['background']['color'])
+        
+        def make_frame(t):
+            import numpy as np
+            frame = np.zeros((height, width, 3), dtype=np.uint8)
+            frame[:, :] = bg_color
+            return frame
+        
         background = VideoClip(
-            make_frame=lambda t: [bg_color] * height * width,
+            frame_function=make_frame,
             duration=duration
-        ).set_fps(self.video_config['fps'])
+        ).with_fps(self.video_config['fps'])
         
         # Создание текста
         text_config = self.video_config['text']
         txt_clip = TextClip(
-            text,
-            fontsize=text_config['fontsize'],
-            color=text_config['color'],
+            text=text,
             font=text_config['font'],
-            size=(width * 0.8, None),
-            method='caption'
-        ).set_duration(duration).set_position('center')
+            font_size=text_config['fontsize'],
+            color=text_config['color'],
+            size=(int(width * 0.8), None),
+            method='caption',
+            stroke_color=text_config.get('stroke_color', 'black'),
+            stroke_width=text_config.get('stroke_width', 1)
+        ).with_duration(duration).with_position('center')
         
         return CompositeVideoClip([background, txt_clip])

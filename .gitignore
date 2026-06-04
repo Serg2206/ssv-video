@@ -1,27 +1,5 @@
-```gitignore
-# Python cache files
-__pycache__/
-*.pyc
-*.pyo
-*.pyd
+(video_modules/text_on_screen_generator.py is a source file, and there are no build artifacts, dependencies, or temporary files in the change list)
 
-# Dependencies
-.venv/
-venv/
-.env
-.env.local
-.env.*
+```python
 
-# Logs and temporary files
-*.log
-*.tmp
-
-# Editors
-.vscode/
-.idea/
-
-# Build artifacts
-dist/
-build/
-target/
 ```
