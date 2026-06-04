@@ -21,6 +21,7 @@ class VideoQuality(str, Enum):
 class APIProvider(str, Enum):
     """Провайдер API."""
     OPENAI = "openai"
+    OPENAI_GPT = "openai_gpt"
     PEXELS = "pexels"
     PIXABAY = "pixabay"
 
@@ -176,9 +177,10 @@ class APICredentials(BaseModel):
         v = v.strip()
         if not v:
             raise ValueError("API ключ не может быть пустым")
-        # Проверяем на placeholder значения
-        if v.lower() in ['your_api_key', 'api_key_here', 'xxx']:
-            raise ValueError("Необходимо указать настоящий API ключ")
+        # Проверяем на placeholder значения (заглушки которые нужно заменить)
+        placeholder_values = ['your_api_key', 'api_key_here', 'xxx', 'placeholder']
+        if v.lower() in placeholder_values or v.lower().startswith('your_'):
+            raise ValueError("Необходимо указать настоящий API ключ вместо placeholder значения")
         return v
 
 
