@@ -1,11 +1,12 @@
 
 """
 text_on_screen_generator.py - Генерация видео с текстом на экране
+Версия 2.0: с поддержкой TTS-озвучки и аудио
 """
 import os
 from moviepy.editor import (
     VideoClip, ImageClip, TextClip, CompositeVideoClip,
-    concatenate_videoclips
+    concatenate_videoclips, AudioFileClip
 )
 
 
@@ -13,11 +14,18 @@ class TextOnScreenGenerator:
     def __init__(self, config):
         self.config = config
         self.video_config = config['video_generation']
+        self.tts_config = config.get('tts', {})
 
-    def generate(self, transcript, thumbnail_path=None, output_path="output.mp4"):
+    def generate(self, transcript, thumbnail_path=None, audio_path=None, output_path="output.mp4"):
         """Генерация видео с текстом на экране"""
         print("  - Подготовка текстовых фрагментов...")
         text_chunks = self._split_text(transcript)
+        
+        # Генерация аудио из текста, если не предоставлено
+        if not audio_path and self.tts_config.get('engine'):
+            from modules.tts_generator import TTSGenerator
+            tts = TTSGenerator(self.config)
+            audio_path = tts.generate(transcript, "audio_tts.mp3")
         
         print("  - Создание видеоклипов...")
         clips = []
@@ -36,12 +44,35 @@ class TextOnScreenGenerator:
         print("  - Объединение клипов...")
         final_video = concatenate_videoclips(clips, method="compose")
         
+        # Добавление аудио (если есть)
+        if audio_path and os.path.exists(audio_path):
+            print("  - Добавление аудио дорожки...")
+            try:
+                audio = AudioFileClip(audio_path)
+                final_video = final_video.set_audio(audio)
+                
+                # Корректировка длительности видео под аудио
+                if audio.duration > final_video.duration:
+                    print(f"  - Увеличение длительности видео до {audio.duration:.1f}с...")
+                    # Добавление черного экрана в конец, если аудио длиннее
+                    extra_duration = audio.duration - final_video.duration
+                    if extra_duration > 0:
+                        black_screen = VideoClip(
+                            make_frame=lambda t: [[20, 25, 30]] * int(self.video_config['resolution']['height']) * int(self.video_config['resolution']['width']),
+                            duration=extra_duration
+                        ).set_fps(self.video_config['fps'])
+                        final_video = concatenate_videoclips([final_video, black_screen], method="compose")
+                
+                final_video = final_video.set_duration(audio.duration)
+            except Exception as e:
+                print(f"  ! Ошибка добавления аудио: {e}. Видео будет без звука.")
+        
         print("  - Экспорт видео...")
         final_video.write_videofile(
             output_path,
             fps=self.video_config['fps'],
             codec='libx264',
-            audio_codec='aac'
+            audio_codec='aac' if audio_path else None
         )
         
         return output_path
@@ -76,7 +107,7 @@ class TextOnScreenGenerator:
         # Создание фона
         bg_color = tuple(self.video_config['background']['color'])
         background = VideoClip(
-            make_frame=lambda t: [bg_color] * height * width,
+            make_frame=lambda t: [[bg_color] * width for _ in range(height)],
             duration=duration
         ).set_fps(self.video_config['fps'])
         

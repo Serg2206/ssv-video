@@ -1,15 +1,27 @@
 
 project:
   name: "SSVproff Video Creator"
-  version: "1.0.0"
+  version: "2.0.0"
 
 paths:
   input_folder: "./input"
   output_folder: "./output"
   ssv_package_folder: "./output/2024-05-21_..."
 
+# TTS (Text-to-Speech) настройки
+tts:
+  engine: "gtts"  # 'gtts' (онлайн, качественнее) или 'pyttsx3' (офлайн, быстрее)
+  language: "ru"
+  rate: 150  # Скорость речи (для pyttsx3)
+  volume: 0.9  # Громкость (для pyttsx3)
+
+# Превью настройки
+thumbnail:
+  generator: "local_template"  # 'local_template' или 'dalle'
+  style: "professional"
+
 video_generation:
-  method: "text_on_screen"
+  method: "text_on_screen_with_audio"  # 'text_on_screen', 'text_on_screen_with_audio'
   resolution:
     width: 1280
     height: 720
@@ -26,4 +38,11 @@ video_generation:
     stroke_width: 1
     position: ["center", 0.6]
   thumbnail_duration: 3
-  audio_input: null
+  audio_input: null  # Путь к аудиофайлу или null для автогенерации
+
+# YouTube настройки
+youtube:
+  client_secrets_file: "client_secret.json"
+  default_privacy: "private"  # 'private', 'unlisted', 'public'
+  category_id: "27"  # Образование
+  auto_upload: false  # Автоматическая загрузка после создания видео
