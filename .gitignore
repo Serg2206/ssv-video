@@ -1,4 +1,18 @@
 ```
-# Environment
-.env
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Output directories
+output/
+input/
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.temp
 ```
