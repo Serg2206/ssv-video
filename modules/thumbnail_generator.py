@@ -28,10 +28,6 @@ class ThumbnailGenerator:
 
     def _generate_local(self, title):
         """Генерация превью локально (шаблон) с валидацией"""
-        # Валидация заголовка
-        if not title or not isinstance(title, str):
-            raise ValueError("Заголовок должен быть непустой строкой")
-        
         sanitized_title = title.strip()
         if len(sanitized_title) > 200:
             sanitized_title = sanitized_title[:200]
@@ -71,10 +67,6 @@ class ThumbnailGenerator:
 
     def _generate_api(self, title):
         """Генерация превью через API с валидацией входных данных"""
-        # Валидация заголовка
-        if not title or not isinstance(title, str):
-            raise ValueError("Заголовок должен быть непустой строкой")
-        
         # Санитизация заголовка - удаление потенциально опасных символов
         sanitized_title = title.strip()
         if len(sanitized_title) > 200:

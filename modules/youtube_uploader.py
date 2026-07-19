@@ -153,7 +153,6 @@ class YouTubeUploader:
         if not os.path.exists(metadata_file):
             raise FileNotFoundError("Файл метаданных metadata.json не найден в пакете")
         
-        import json
         with open(metadata_file, 'r', encoding='utf-8') as f:
             metadata = json.load(f)
         
