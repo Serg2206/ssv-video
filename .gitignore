@@ -1,5 +1,8 @@
-(video_modules/text_on_screen_generator.py is a source file, and there are no build artifacts, dependencies, or temporary files in the change list)
+```
+# Python compiled files
+*.pyc
+__pycache__/
 
-```python
-
+# Logs
+logs/
 ```
