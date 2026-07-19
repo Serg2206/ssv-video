@@ -37,15 +37,22 @@ class Packager:
     def _save_transcript(self, folder, transcript):
         """Сохранение транскрипции"""
         with open(os.path.join(folder, "transcript.txt"), 'w', encoding='utf-8') as f:
-            f.write(transcript)
+            if isinstance(transcript, list):
+                # Конвертируем список словарей в текст
+                for entry in transcript:
+                    time = entry.get('time', '')
+                    text = entry.get('text', '')
+                    f.write(f"[{time}] {text}\n")
+            else:
+                f.write(str(transcript))
 
     def _save_metadata(self, folder, ai_content):
         """Сохранение метаданных"""
         metadata = {
-            'title': ai_content['title'],
-            'description': ai_content['description'],
-            'tags': ai_content['tags'],
-            'chapters': ai_content['chapters'],
+            'title': ai_content.get('title', 'Unknown'),
+            'description': ai_content.get('description', ''),
+            'tags': ai_content.get('keywords', ai_content.get('tags', [])),
+            'chapters': ai_content.get('chapters', []),
             'generated_at': datetime.now().isoformat()
         }
         with open(os.path.join(folder, "metadata.json"), 'w', encoding='utf-8') as f:
@@ -58,16 +65,19 @@ class Packager:
 
     def _save_readme(self, folder, ai_content):
         """Создание README.md"""
-        readme_content = f"""# {ai_content['title']}
+        tags = ai_content.get('keywords', ai_content.get('tags', []))
+        chapters = ai_content.get('chapters', [])
+        
+        readme_content = f"""# {ai_content.get('title', 'Unknown')}
 
 ## Описание
-{ai_content['description']}
+{ai_content.get('description', '')}
 
 ## Теги
-{', '.join(ai_content['tags'])}
+{', '.join(tags) if tags else 'Нет тегов'}
 
 ## Главы
-{''.join([f'- {chapter}' + chr(10) for chapter in ai_content['chapters']])}
+{''.join([f'- {chapter}' + chr(10) for chapter in chapters]) if chapters else 'Нет глав'}
 
 ---
 Сгенерировано с помощью ssv-video v2.0
@@ -85,10 +95,13 @@ class Packager:
             json.dump(ai_content, f, ensure_ascii=False, indent=2)
         
         # Экспорт в Markdown
+        tags = ai_content.get('keywords', ai_content.get('tags', []))
+        chapters = ai_content.get('chapters', [])
+        
         with open(os.path.join(artifacts_folder, "ai_content.md"), 'w', encoding='utf-8') as f:
-            f.write(f"# {ai_content['title']}\n\n")
-            f.write(f"## Описание\n{ai_content['description']}\n\n")
-            f.write(f"## Теги\n{', '.join(ai_content['tags'])}\n\n")
+            f.write(f"# {ai_content.get('title', 'Unknown')}\n\n")
+            f.write(f"## Описание\n{ai_content.get('description', '')}\n\n")
+            f.write(f"## Теги\n{', '.join(tags) if tags else 'Нет тегов'}\n\n")
             f.write(f"## Главы\n")
-            for chapter in ai_content['chapters']:
+            for chapter in chapters:
                 f.write(f"- {chapter}\n")
