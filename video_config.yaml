@@ -1,7 +1,7 @@
 
 project:
   name: "SSVproff Video Creator"
-  version: "1.0.0"
+  version: "3.0.0"
 
 paths:
   input_folder: "./input"
@@ -9,11 +9,15 @@ paths:
   ssv_package_folder: "./output/2024-05-21_..."
 
 video_generation:
-  method: "text_on_screen"
+  # "narrated"       - новый бесплатный ИИ-пайплайн: озвучка + иллюстрации + субтитры (по умолчанию)
+  # "text_on_screen" - старый режим (текст на однотонном фоне, без звука) - оставлен для совместимости
+  method: "narrated"
   resolution:
     width: 1280
     height: 720
-  fps: 24
+  fps: 30
+  thumbnail_duration: 3
+  # Ниже - настройки только для legacy-режима "text_on_screen"
   duration_per_text_chunk: 5
   background:
     color: [20, 25, 30]
@@ -25,5 +29,37 @@ video_generation:
     stroke_color: "black"
     stroke_width: 1
     position: ["center", 0.6]
-  thumbnail_duration: 3
-  audio_input: null
+
+# Озвучка через edge-tts (бесплатно, без API-ключа, нейросетевые голоса Microsoft Edge)
+narration:
+  enabled: true
+  voice: "ru-RU-DmitryNeural"   # мужской голос; альтернатива - "ru-RU-SvetlanaNeural" (женский)
+  rate: "+0%"                   # напр. "+10%" - быстрее, "-10%" - медленнее
+  volume: "+0%"
+
+# ИИ-иллюстрации через Pollinations.ai (бесплатно, без API-ключа)
+illustrations:
+  enabled: true
+  style_suffix: "медицинская научная иллюстрация, учебная схема, чистый стиль, высокое качество"
+  fallback_color: [20, 25, 30]   # используется, если сервис недоступен
+  timeout: 30
+  # Примечание: иллюстрации носят обобщающий характер и не заменяют
+  # анатомически точные схемы - проверяйте перед публикацией.
+
+# Субтитры, синхронные с озвучкой (тайминг берётся напрямую из edge-tts)
+subtitles:
+  enabled: true
+  words_per_group: 4
+  font: "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"  # если не найден - используется встроенный шрифт moviepy
+  fontsize: 44
+  color: "white"
+  stroke_color: "black"
+  stroke_width: 2
+  position_y_ratio: 0.85
+
+# Фоновая музыка (опционально). Чтобы включить - положите свой CC0/royalty-free
+# трек в assets/music/ и укажите путь в track_path.
+music:
+  enabled: false
+  track_path: null
+  volume: 0.12

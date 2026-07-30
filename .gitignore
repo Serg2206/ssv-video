@@ -1,0 +1,14 @@
+__pycache__/
+*.pyc
+venv/
+.venv/
+
+# Секреты и токены - никогда не должны попадать в репозиторий
+.env
+client_secrets.json
+token.pickle
+
+# Рабочие/генерируемые данные
+output/
+logs/
+*.log

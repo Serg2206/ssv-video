@@ -6,6 +6,7 @@ pillow
 pyyaml
 python-dotenv
 requests
-moviepy>=1.0.3
+moviepy>=2.0,<3.0
 pydantic>=2.0.0
 colorama>=0.4.6
+edge-tts>=6.1.9

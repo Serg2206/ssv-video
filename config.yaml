@@ -15,8 +15,8 @@ ai:
 
 thumbnail:
   style: "branding_v1"
-  generator: "local_template"
-  api_provider: "dall_e"
+  generator: "api"              # "local_template" (одноцветный фон) | "api" (бесплатный ИИ-фон + текст)
+  api_provider: "pollinations"  # бесплатно, без API-ключа (заменяет прежний неработающий DALL-E TODO)
 
 youtube:
   enabled: false

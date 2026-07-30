@@ -9,8 +9,6 @@ import argparse
 import yaml
 import json
 
-from video_modules.text_on_screen_generator import TextOnScreenGenerator
-
 
 def load_config(config_path="video_config.yaml"):
     """Загрузка конфигурации для генерации видео"""
@@ -62,8 +60,14 @@ def main():
 
         # Генерация видео
         print("\n[2/3] Генерация видео...")
-        generator = TextOnScreenGenerator(config)
-        
+        method = config['video_generation'].get('method', 'narrated')
+        if method == 'text_on_screen':
+            from video_modules.text_on_screen_generator import TextOnScreenGenerator
+            generator = TextOnScreenGenerator(config)
+        else:
+            from video_modules.narrated_video_generator import NarratedVideoGenerator
+            generator = NarratedVideoGenerator(config)
+
         # Путь к превью и транскрипции
         thumbnail_path = os.path.join(args.package_path, "thumbnail.png")
         transcript_path = os.path.join(args.package_path, "transcript.txt")
